@@ -1,4 +1,5 @@
 from routers.schemas import PostBase
+from fastapi import HTTPException, status
 from sqlalchemy.orm.session import Session
 from .models import DbPost
 import datetime
@@ -19,3 +20,14 @@ def create(request: PostBase,  db: Session):
 def get_all(db: Session):
     posts = db.query(DbPost).all()
     return posts
+
+def delete(id: int, db: Session, user_id: int):
+    post = db.query(DbPost).filter(DbPost.id == id).first()
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Post with id {id} not found")
+    if not post.user_id == user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You are not authorized.")
+    post.delete(synchronize_session=False)
+    db.commit()
+    return 'done'
