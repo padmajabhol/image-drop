@@ -15,3 +15,7 @@ def create(request: PostBase,  db: Session):
     db.commit()
     db.refresh(new_post)
     return new_post
+
+def get_all(db: Session):
+    posts = db.query(DbPost).all()
+    return posts
