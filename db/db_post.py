@@ -2,14 +2,14 @@ from routers.schemas import PostBase
 from fastapi import HTTPException, status
 from sqlalchemy.orm.session import Session
 from .models import DbPost
-import datetime
+from datetime import datetime
 
 def create(request: PostBase,  db: Session):
     new_post = DbPost(
         image_url = request.image_url,
         image_url_type = request.image_url_type,
         caption = request.caption,
-        timestamp = datetime.datetime.now(),
+        timestamp = datetime.now(),
         user_id = request.creator_id
     )
     db.add(new_post)
